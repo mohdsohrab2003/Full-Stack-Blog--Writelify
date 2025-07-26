@@ -20,7 +20,7 @@ const Hero = () => {
               to write without filters. Whether it's one word or a thousand,
               your story starts right here.
             </p>
-            <div className="max-w-[50%] m-auto">
+            <div className="w-full max-w-xl mx-auto">
               <SearchBar />
             </div>
           </div>
