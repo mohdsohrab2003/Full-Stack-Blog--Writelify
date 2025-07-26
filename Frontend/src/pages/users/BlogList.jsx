@@ -6,8 +6,13 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import BlogCard from "../../components/users/BlogCard";
 import Footer from "../../components/users/Footer";
-import { setBlogSearchTerm } from "../../features/Blog/bloglistSlice";
+import {
+  setBlogSearchTerm,
+  setCurrentPage,
+} from "../../features/Blog/bloglistSlice";
 import { RxCross1 } from "react-icons/rx";
+import { selectPaginatedBlogs } from "../../features/Blog/bloglistSlice";
+import PaginationComponent from "../../components/users/Pagination";
 const BlogList = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -15,7 +20,8 @@ const BlogList = () => {
 
   const dispatch = useDispatch();
 
-  const blogData = useSelector((state) => state.blog.filterBlogs);
+  // const blogData = useSelector((state) => state.blog.filterBlogs);
+  const blogData = useSelector(selectPaginatedBlogs);
   useEffect(() => {
     if (input) {
       dispatch(setBlogSearchTerm(input));
@@ -71,7 +77,9 @@ const BlogList = () => {
             <BlogCard key={blog._id} Blog={blog} />
           ))}
         </div>
+        <PaginationComponent />
       </div>
+
       <Footer />
     </>
   );

@@ -186,13 +186,13 @@ const Navbar = () => {
             ) : (
               <div className="hidden md:flex items-center space-x-3">
                 <button
-                  onClick={() => dispatch(login())}
-                  className="px-4 py-2 text-[#5044E5] font-semibold hover:bg-[#5044E5]/10 rounded-full transition-all duration-300"
+                  onClick={() => navigate("/login")}
+                  className="px-6 py-2 bg-gradient-to-r from-[#5044E5] to-[#4035c5] text-white font-semibold rounded-full hover:shadow-lg hover:shadow-[#5044E5]/30 transform hover:-translate-y-0.5 transition-all duration-300"
                 >
-                  Login
+                  Sign In
                 </button>
                 <button
-                  onClick={() => dispatch(login())}
+                  onClick={() => navigate("/signup")}
                   className="px-6 py-2 bg-gradient-to-r from-[#5044E5] to-[#4035c5] text-white font-semibold rounded-full hover:shadow-lg hover:shadow-[#5044E5]/30 transform hover:-translate-y-0.5 transition-all duration-300"
                 >
                   Sign Up
@@ -287,13 +287,13 @@ const Navbar = () => {
               ) : (
                 <div className="space-y-3">
                   <button
-                    onClick={() => dispatch(login())}
-                    className="w-full py-3 px-4 text-[#5044E5] font-semibold border border-[#5044E5] rounded-lg hover:bg-[#5044E5]/10 transition-all duration-300"
+                    onClick={() => navigate("/login")}
+                    className="w-full py-3 px-4 bg-gradient-to-r from-[#5044E5] to-[#4035c5] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300"
                   >
-                    Login
+                    Sign In
                   </button>
                   <button
-                    onClick={() => dispatch(login())}
+                    onClick={() => navigate("/signup")}
                     className="w-full py-3 px-4 bg-gradient-to-r from-[#5044E5] to-[#4035c5] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300"
                   >
                     Sign Up

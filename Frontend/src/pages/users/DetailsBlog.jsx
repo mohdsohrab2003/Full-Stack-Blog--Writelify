@@ -38,7 +38,7 @@ const DetailsBlog = () => {
     setLoading(true);
     try {
       // Simulate API delay for better UX demonstration
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 10));
       const blogData = blog_data.find((blog) => blog._id === id);
       setData(blogData);
 

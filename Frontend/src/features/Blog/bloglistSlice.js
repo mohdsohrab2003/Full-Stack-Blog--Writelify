@@ -7,6 +7,8 @@ const initialState = {
   filterBlogs: blog_data,
   searchTerm: "", // For blog list page only
   selectedCategory: "All", // Local fallback
+  currentPage: 1,
+  blogsPerPage: 6,
 };
 const blogSlice = createSlice({
   name: "blog",
@@ -16,20 +18,15 @@ const blogSlice = createSlice({
       state.searchTerm = action.payload;
       applyFilters(state);
     },
+    setCurrentPage: (state, action) => {
+      state.currentPage = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(setCategory, (state, action) => {
       state.selectedCategory = action.payload;
       applyFilters(state);
     });
-    // extraReducers: (builder) => {
-    //   builder.addCase(setCategory, (state, action) => {
-    //     const selected = action.payload;
-    //     state.filterBlogs =
-    //       selected === "All"
-    //         ? state.blogs
-    //         : state.blogs.filter((blog) => blog.category === selected);
-    //   });
   },
 });
 
@@ -47,6 +44,13 @@ function applyFilters(state) {
   });
 }
 
-export const { setBlogSearchTerm } = blogSlice.actions;
+export const selectPaginatedBlogs = (state) => {
+  const { filterBlogs, currentPage, blogsPerPage } = state.blog;
+  const start = (currentPage - 1) * blogsPerPage;
+  const end = start + blogsPerPage;
+  return filterBlogs.slice(start, end);
+};
+
+export const { setBlogSearchTerm, setCurrentPage } = blogSlice.actions;
 
 export default blogSlice.reducer;

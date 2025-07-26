@@ -28,10 +28,17 @@ const BlogCard = ({ Blog }) => {
       dispatch(addToWishlist(Blog));
     }
   };
+  const handleCardClick = () => {
+    if (!isLoggedIn) {
+      navigate("/login");
+    } else {
+      navigate(`/blog-list/${Blog._id}`);
+    }
+  };
   return (
     <>
       <div
-        onClick={() => navigate(`/blog-list/${Blog._id}`)}
+        onClick={handleCardClick}
         className="relative w-full rounded-lg overflow-hidden shadow hover:scale-102 hover:shadow-primary/25 duration-300 cursor-pointer"
       >
         {/* Heart Icon Top Right */}

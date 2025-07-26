@@ -7,7 +7,15 @@ import { FaArrowRightLong } from "react-icons/fa6";
 const HBlogList = () => {
   const navigate = useNavigate();
   const blogs = useSelector((state) => state.blog.filterBlogs);
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const topBlog = blogs.slice(0, 8);
+  const handelViewAll = () => {
+    if (!isLoggedIn) {
+      navigate("/login");
+    } else {
+      navigate(`/blog-list`);
+    }
+  };
   return (
     <>
       <div className="flex flex-col items-center py-10 px-4">
@@ -18,7 +26,7 @@ const HBlogList = () => {
         </div>
         <div>
           <button
-            onClick={() => navigate("/blog-list")}
+            onClick={handelViewAll}
             className="flex items-center gap-2 px-5 py-2 bg-indigo-600 text-white font-semibold rounded-full hover:bg-indigo-700 transition-all duration-300"
           >
             <span>View All</span>
