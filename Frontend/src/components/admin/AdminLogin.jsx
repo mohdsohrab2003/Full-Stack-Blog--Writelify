@@ -1,10 +1,32 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { loginAdmin } from "../../features/Auth/adminAuth";
+import toast from "react-hot-toast";
 
 const AdminLogin = () => {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const { loading, error, isAuthenticated } = useSelector(
+    (state) => state.authAdmin
+  );
+  useEffect(() => {
+    if (isAuthenticated) {
+      toast.success("Login successful");
+      navigate("/admin-dashboard"); // redirect to admin dashboard or desired route
+    }
+  }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
   const handleLogin = async (e) => {
     e.preventDefault();
+    dispatch(loginAdmin({ email, password }));
   };
   return (
     <div className="flex items-center justify-center h-screen">
@@ -46,9 +68,10 @@ const AdminLogin = () => {
             </div>
             <button
               type="submit"
+              disabled={loading}
               className="w-full py-3 font-medium bg-primary text-white rounded cursor-pointer hover:bg-primary/90 transition-all"
             >
-              Login
+              {loading ? "Logging in..." : "Login"}
             </button>
           </form>
         </div>

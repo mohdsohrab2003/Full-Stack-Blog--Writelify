@@ -1,20 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { assets, dashboard_data } from "../../assets/QuickBlog-Assets/assets";
 import BlogTableItem from "../../components/admin/BlogTableItem";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchDashboardData } from "../../features/Admin/dashboard";
 
 const DashBoard = () => {
-  const [dashboardData, setDashBoardData] = useState({
-    blogs: 0,
-    comments: 0,
-    drafts: 0,
-    recentBlogs: [],
-  });
-  const fetchBlog = async () => {
-    setDashBoardData(dashboard_data);
-  };
+  const dispatch = useDispatch();
+  const { blogs, comments, drafts, recentBlogs, loading } = useSelector(
+    (state) => state.dashboard
+  );
+
+  // useEffect(() => {
+  //   dispatch(fetchDashboardData());
+  // }, [dispatch]);
+  // const [dashboardData, setDashBoardData] = useState({
+  //   blogs: 0,
+  //   comments: 0,
+  //   drafts: 0,
+  //   recentBlogs: [],
+  // });
+  // const fetchBlog = async () => {
+  //   setDashBoardData(dashboard_data);
+  // };
   useEffect(() => {
-    fetchBlog();
-  }, []);
+    dispatch(fetchDashboardData());
+  }, [dispatch]);
   return (
     <div className="flex-1 p-4 md:p-10 bg-blue-50/50">
       {/* Blog */}
@@ -22,9 +32,7 @@ const DashBoard = () => {
         <div className="flex items-center gap-4 bg-white p-4 min-w-58 rounded shadow cursor-pointer hover:scale-105 transition-all">
           <img src={assets.dashboard_icon_1} alt="" />
           <div>
-            <p className="text-xl font-semibold text-gray-600">
-              {dashboardData.blogs}
-            </p>
+            <p className="text-xl font-semibold text-gray-600">{blogs}</p>
             <p className="text-gray-400 font-light">Blogs</p>
           </div>
         </div>
@@ -32,9 +40,7 @@ const DashBoard = () => {
         <div className="flex items-center gap-4 bg-white p-4 min-w-58 rounded shadow cursor-pointer hover:scale-105 transition-all">
           <img src={assets.dashboard_icon_2} alt="" />
           <div>
-            <p className="text-xl font-semibold text-gray-600">
-              {dashboardData.comments}
-            </p>
+            <p className="text-xl font-semibold text-gray-600">{comments}</p>
             <p className="text-gray-400 font-light">Comments</p>
           </div>
         </div>
@@ -42,9 +48,7 @@ const DashBoard = () => {
         <div className="flex items-center gap-4 bg-white p-4 min-w-58 rounded shadow cursor-pointer hover:scale-105 transition-all">
           <img src={assets.dashboard_icon_3} alt="" />
           <div>
-            <p className="text-xl font-semibold text-gray-600">
-              {dashboardData.drafts}
-            </p>
+            <p className="text-xl font-semibold text-gray-600">{drafts}</p>
             <p className="text-gray-400 font-light">Drafts</p>
           </div>
         </div>
@@ -79,8 +83,8 @@ const DashBoard = () => {
             </thead>
             <tbody>
               {/* Table body content goes here */}
-              {Array.isArray(dashboardData.recentBlogs) &&
-                dashboardData.recentBlogs.map((blog, i) => (
+              {Array.isArray(recentBlogs) &&
+                recentBlogs.map((blog, i) => (
                   <BlogTableItem
                     key={blog._id}
                     index={i + 1}

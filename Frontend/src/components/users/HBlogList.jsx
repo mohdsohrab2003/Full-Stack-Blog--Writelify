@@ -1,14 +1,16 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import BlogCard from "./BlogCard";
 import { FaArrowRightLong } from "react-icons/fa6";
+import { fetchBlogs } from "../../features/Blog/bloglistSlice";
 
 const HBlogList = () => {
   const navigate = useNavigate();
   const blogs = useSelector((state) => state.blog.filterBlogs);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const topBlog = blogs.slice(0, 8);
+  const dispatch = useDispatch();
   const handelViewAll = () => {
     if (!isLoggedIn) {
       navigate("/login");
@@ -16,6 +18,10 @@ const HBlogList = () => {
       navigate(`/blog-list`);
     }
   };
+  useEffect(() => {
+    dispatch(fetchBlogs());
+  }, [dispatch]);
+
   return (
     <>
       <div className="flex flex-col items-center py-10 px-4">

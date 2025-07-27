@@ -15,40 +15,44 @@ import ListBlog from "./pages/admin/ListBlog";
 import Comment from "./pages/admin/Comment";
 import AdminLogin from "./components/admin/AdminLogin";
 import "quill/dist/quill.snow.css";
-
+import Toster from "react-hot-toast";
 const App = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  const navigate = useNavigate(); // hook to navigate programmatically
-  const [isLogin, setIsLogin] = useState(true); //temp use
 
-  // useEffect(() => {
-  //   if (!isLoggedIn) {
-  //     navigate("/login"); // Redirect to login page if not logged in
-  //   }
-  // }, []);
+  const isAuthenticated = useSelector(
+    (state) => state.authAdmin.isAuthenticated
+  );
+
+  // console.log(isAuthenticated);
+
   return (
     <>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        {!isLoggedIn ? (
-          <>
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/login" element={<Login />} />
-          </>
-        ) : (
-          <>
-            <Route path="/blog-list" element={<BlogList />} />
-            <Route path="/wish-list" element={<WishList />} />
-            <Route path="/blog-list/:id" element={<DetailsBlog />} />
-          </>
-        )}
-        <Route path="/admin" element={isLogin ? <Layout /> : <AdminLogin />}>
-          <Route index element={<DashBoard />} />
-          <Route path="add-blog" element={<AddBlog />} />
-          <Route path="list-blog" element={<ListBlog />} />
-          <Route path="comment" element={<Comment />} />
-        </Route>
-      </Routes>
+      <div>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          {!isLoggedIn ? (
+            <>
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/login" element={<Login />} />
+            </>
+          ) : (
+            <>
+              <Route path="/blog-list" element={<BlogList />} />
+              <Route path="/wish-list" element={<WishList />} />
+              <Route path="/blog-list/:id" element={<DetailsBlog />} />
+            </>
+          )}
+          <Route
+            path="/admin"
+            element={isAuthenticated ? <Layout /> : <AdminLogin />}
+          >
+            <Route index element={<DashBoard />} />
+            <Route path="add-blog" element={<AddBlog />} />
+            <Route path="list-blog" element={<ListBlog />} />
+            <Route path="comment" element={<Comment />} />
+          </Route>
+        </Routes>
+      </div>
     </>
   );
 };
