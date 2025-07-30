@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import htmlTruncate from "html-truncate";
 import { FaRegHeart, FaHeart } from "react-icons/fa6";
 import {
-  addToWishlist,
-  removeFromWishlist,
+  addToWishlistAsync,
+  removeFromWishlistAsync,
 } from "../../features/Blog/wishlist";
 import { useDispatch, useSelector } from "react-redux";
 const BlogCard = ({ Blog }) => {
@@ -23,9 +23,9 @@ const BlogCard = ({ Blog }) => {
       return;
     }
     if (isInWishlist) {
-      dispatch(removeFromWishlist(Blog));
+      dispatch(removeFromWishlistAsync(Blog));
     } else {
-      dispatch(addToWishlist(Blog));
+      dispatch(addToWishlistAsync(Blog));
     }
   };
   const handleCardClick = () => {

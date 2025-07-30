@@ -1,15 +1,16 @@
 // src/redux/slices/authSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import axiosInstance from "../../utils/axiosInstance";
 
 export const loginAdmin = createAsyncThunk(
   "auth/loginAdmin",
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/admin/login",
-        { email, password }
-      );
+      const response = await axiosInstance.post("/api/admin/login", {
+        email,
+        password,
+      });
       const { token } = response.data;
       localStorage.setItem("adminToken", token);
       return token;

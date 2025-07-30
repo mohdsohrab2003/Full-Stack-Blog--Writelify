@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import axiosInstance from "../../utils/axiosInstance";
 
 export const addBlog = createAsyncThunk(
   "adminBlog/addBlog",
@@ -41,16 +42,12 @@ export const addBlog = createAsyncThunk(
         }
       }
 
-      const res = await axios.post(
-        "http://localhost:3000/api/blog/add",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await axiosInstance.post("/api/blog/add", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (res.data.success) return res.data;
       else return rejectWithValue(res.data.message || "Failed to add blog");

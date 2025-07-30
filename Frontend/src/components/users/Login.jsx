@@ -3,17 +3,25 @@ import { assets } from "../../assets/QuickBlog-Assets/assets";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../../features/Auth/userAuth";
+
 import { useState } from "react";
+import { loginUser } from "../../features/Auth/userAuth";
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  const handlelogin = () => {
-    if (!isLoggedIn) {
-      dispatch(login());
-      navigate("/");
+  const { loading, error, isLoggedIn } = useSelector((state) => state.auth);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const resultAction = await dispatch(loginUser({ email, password }));
+
+    if (loginUser.fulfilled.match(resultAction)) {
+      navigate("/"); // login successful
     }
+    // else error will be shown from Redux state
   };
   return (
     <>
@@ -44,9 +52,15 @@ const Login = () => {
                 Sign in to your account to continue
               </p>
             </div>
+            {/* Error */}
+            {error && (
+              <p className="text-red-600 text-center font-medium mb-4">
+                {error}
+              </p>
+            )}
 
             {/* Login Form */}
-            <form className="space-y-6">
+            <form className="space-y-4" onSubmit={handleLogin}>
               {/* Email Field */}
               <div className="space-y-2">
                 <label
@@ -58,6 +72,8 @@ const Login = () => {
                 <input
                   type="email"
                   id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200 placeholder-gray-400"
                   // required
@@ -75,6 +91,8 @@ const Login = () => {
                 <input
                   type="password"
                   id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200 placeholder-gray-400"
                   // required
@@ -87,14 +105,14 @@ const Login = () => {
                   to="/forgot-password"
                   className="text-sm text-blue-600 hover:text-blue-700 hover:underline font-medium"
                 >
-                  Forgot password?
+                  {loading ? "Signing in..." : "Sign In"}
                 </Link>
               </div>
 
               {/* Submit Button */}
               <button
                 type="submit"
-                onClick={handlelogin}
+                // onClick={handlelogin}
                 className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl transition-all duration-200 transform hover:scale-[1.02] focus:ring-4 focus:ring-blue-200 shadow-lg hover:shadow-xl"
               >
                 Sign in

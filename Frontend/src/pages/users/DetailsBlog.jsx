@@ -813,15 +813,15 @@ const DetailsBlog = () => {
           {/* Featured Image */}
           {data.image && (
             <div className="mb-12 sm:mb-16">
-              <div className="relative group overflow-hidden rounded-2xl sm:rounded-3xl shadow-2xl">
+              <div className="relative group overflow-hidden rounded-2xl sm:rounded-3xl ">
                 <img
                   src={data.image}
                   alt={data.title}
-                  className="w-full h-64 sm:h-96 lg:h-[500px] object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="w-full h-64 sm:h-96 lg:h-[500px] object-cover transition-transform duration-700"
                   onError={handleImageError}
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0  transition-opacity duration-300" />
               </div>
             </div>
           )}

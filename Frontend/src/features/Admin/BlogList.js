@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import axiosInstance from "../../utils/axiosInstance";
 
 // ✅ 1. DELETE BLOG THUNK (must be above createSlice)
 export const deleteBlog = createAsyncThunk(
@@ -7,8 +8,8 @@ export const deleteBlog = createAsyncThunk(
   async (id, { getState, rejectWithValue }) => {
     try {
       const token = getState().authAdmin.token;
-      const response = await axios.delete(
-        `http://localhost:3000/api/blog/delete?blogId=${id}`,
+      const response = await axiosInstance.delete(
+        `/api/blog/delete?blogId=${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -39,14 +40,11 @@ export const fetchBlogsList = createAsyncThunk(
         return rejectWithValue("No authentication token found");
       }
 
-      const response = await axios.get(
-        "http://localhost:3000/api/admin/blogs",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axiosInstance.get("/api/admin/blogs", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.data.success) {
         return response.data.blogList; // ✅ Fix here

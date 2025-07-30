@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, use } from "react";
 import { assets } from "../../assets/QuickBlog-Assets/assets";
 import {
   FaRegHeart,
@@ -13,7 +13,7 @@ import {
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { login, logout } from "../../features/Auth/userAuth";
+import { logout } from "../../features/Auth/userAuth";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,7 +23,7 @@ const Navbar = () => {
   const profileRef = useRef(null);
   const mobileMenuRef = useRef(null);
 
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const { user, isLoggedIn } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const wishlistCount = useSelector((state) => state.wishlist.wishlist.length);
   const navigate = useNavigate();
@@ -137,7 +137,7 @@ const Navbar = () => {
                       <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
                     </div>
                     <span className="text-gray-700 font-medium hidden xl:block">
-                      John Doe
+                      {user?.fullname || "Guest"}
                     </span>
                     <FaChevronDown
                       className={`w-3 h-3 text-gray-500 transition-transform duration-300 ${
@@ -151,26 +151,13 @@ const Navbar = () => {
                     <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 animate-in slide-in-from-top-2 duration-200">
                       <div className="px-4 py-3 border-b border-gray-100">
                         <p className="text-sm font-medium text-gray-900">
-                          John Doe
+                          {user?.fullname || "Guest"}
                         </p>
                         <p className="text-sm text-gray-500">
-                          john.doe@example.com
+                          {user?.email || ""}
                         </p>
                       </div>
-                      <button
-                        onClick={() => handleNavigation("/profile")}
-                        className="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
-                      >
-                        <FaUser className="w-4 h-4 mr-3" />
-                        Profile
-                      </button>
-                      <button
-                        onClick={() => handleNavigation("/settings")}
-                        className="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
-                      >
-                        <FaCog className="w-4 h-4 mr-3" />
-                        Settings
-                      </button>
+
                       <hr className="my-2" />
                       <button
                         onClick={handleLogout}
@@ -255,27 +242,14 @@ const Navbar = () => {
                     />
                     <div className="ml-3">
                       <p className="text-sm font-medium text-gray-900">
-                        John Doe
+                        {user?.fullname || "Guest"}
                       </p>
                       <p className="text-xs text-gray-500">
-                        john.doe@example.com
+                        {user?.email || ""}
                       </p>
                     </div>
                   </div>
-                  <button
-                    onClick={() => handleNavigation("/profile")}
-                    className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-all duration-300"
-                  >
-                    <FaUser className="inline w-4 h-4 mr-3" />
-                    Profile
-                  </button>
-                  <button
-                    onClick={() => handleNavigation("/settings")}
-                    className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-all duration-300"
-                  >
-                    <FaCog className="inline w-4 h-4 mr-3" />
-                    Settings
-                  </button>
+
                   <button
                     onClick={handleLogout}
                     className="block w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-all duration-300"
