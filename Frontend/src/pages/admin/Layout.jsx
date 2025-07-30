@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import { assets } from "../../assets/QuickBlog-Assets/assets";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, Navigate } from "react-router-dom";
 import SideBar from "../../components/admin/SideBar";
 import { useDispatch, useSelector } from "react-redux";
 import { checkAuth, logoutAdmin } from "../../features/Auth/adminAuth";
 
 const Layout = () => {
-  const navigate = useNavigate(); // fixed typo from 'nagigate'
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const isAuthenticated = useSelector(
@@ -16,6 +16,11 @@ const Layout = () => {
   useEffect(() => {
     dispatch(checkAuth());
   }, [dispatch]);
+
+  // Redirect to admin login if not authenticated
+  if (!isAuthenticated) {
+    return <Navigate to="/admin" replace />;
+  }
 
   return (
     <>
@@ -48,10 +53,10 @@ const Layout = () => {
 
       {/* Sidebar & Main Content */}
       <div className="flex h-[calc(100vh-70px)]">
-        <div>
-          <SideBar />
-        </div>
-        <Outlet />
+        <SideBar />
+        <main className="flex-1 overflow-auto">
+          <Outlet />
+        </main>
       </div>
     </>
   );
