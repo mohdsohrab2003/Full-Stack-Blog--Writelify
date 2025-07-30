@@ -23,7 +23,12 @@ const App = () => {
     (state) => state.authAdmin.isAuthenticated
   );
 
-  // console.log(isAuthenticated);
+  useEffect(() => {
+    // If both user and admin are logged out, redirect to "/"
+    if (!isLoggedIn) {
+      navigate("/");
+    }
+  }, [isLoggedIn, navigate]);
 
   return (
     <>
