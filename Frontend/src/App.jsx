@@ -3,7 +3,7 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 import Home from "./pages/users/Home";
 import BlogList from "./pages/users/BlogList";
 import DetailsBlog from "./pages/users/DetailsBlog";
-import WishList from "./pages/users/Wishlist";
+import WishList from "./pages/users/WishList";
 import { useSelector } from "react-redux";
 
 import SignUp from "./components/users/SignUp";
