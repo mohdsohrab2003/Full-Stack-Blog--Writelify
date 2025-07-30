@@ -72,6 +72,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     dispatch(logout());
+    navigate("/");
     setIsProfileOpen(false);
     setIsMenuOpen(false);
   };
