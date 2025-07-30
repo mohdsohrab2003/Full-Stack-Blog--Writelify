@@ -13,7 +13,7 @@ dotenv.config();
 // Miiddleware to parse URL-encoded data
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "*",
   })
 );
 
