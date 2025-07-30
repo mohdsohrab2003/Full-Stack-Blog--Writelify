@@ -25,10 +25,15 @@ const App = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    const publicPaths = ["/", "/login", "/signup", "/admin"];
+    const currentPath = window.location.pathname;
+
+    const isPublicRoute = publicPaths.includes(currentPath);
+
+    if (!isLoggedIn && !isAuthenticated && !isPublicRoute) {
       navigate("/");
     }
-  }, [isLoggedIn, navigate]);
+  }, [isLoggedIn, isAuthenticated, navigate]);
 
   return (
     <>
