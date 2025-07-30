@@ -3,72 +3,57 @@ import imagekit from "../../utils/imagekit.js";
 import Comment from "../../model/comment.js";
 import Blog from "../../model/blog.js";
 
-// export const addBlog = async (req, res) => {
-//   try {
-//     console.log("Incoming req.body.blog =", req.body.blog);
-//     console.log("Incoming image file =", req.file);
-//     const { title, subTitle, description, category, isPublished } = JSON.parse(
-//       req.body.blog
-//     );
-
-//     const imageFile = req.file;
-//     if (!title || !description || !category || !imageFile) {
-//       return res.json({ success: false, message: "Missing required fields" });
-//     }
-
-//     // ✅ Read file buffer
-//     const fileBuffer = fs.readFileSync(imageFile.path);
-//     // ✅ Upload to ImageKit
-//     const response = await imagekit.upload({
-//       file: fileBuffer, // actual file buffer
-//       fileName: imageFile.originalname,
-//       folder: "/blogs",
-//     });
-
-//     // ✅ Generate optimized URL
-//     const optimizedImageUrl = imagekit.url({
-//       path: response.filePath,
-//       transformation: [
-//         { quality: "auto" },
-//         { format: "webp" },
-//         { width: "1280" },
-//       ],
-//     });
-//     // ✅ Create blog in DB
-//     await Blog.create({
-//       title,
-//       subTitle,
-//       description,
-//       category,
-//       image: optimizedImageUrl,
-//       isPublished,
-//     });
-//     res.json({ success: true, message: "Blog Added successfully" });
-//   } catch (error) {
-//     return res.json({ success: false, message: "Missing required fields" });
-//   }
-// };
-
 export const addBlog = async (req, res) => {
   try {
-    console.log("Incoming req.body.blog =", req.body.blog);
-    console.log("Incoming image file =", req.file);
+    // console.log("=== DEBUG INFO ===");
+    // console.log("req.body:", req.body);
+    // console.log("req.file:", req.file);
+    // console.log("req.body.blog:", req.body.blog);
+    // console.log("==================");
 
-    const { title, subTitle, description, category, isPublished } = JSON.parse(
-      req.body.blog
-    );
-
-    const imageFile = req.file;
-    if (!title || !description || !category || !imageFile) {
-      return res.json({ success: false, message: "Missing required fields" });
+    // Validate request structure
+    if (!req.body.blog) {
+      return res.json({ success: false, message: "Blog data is required" });
     }
 
+    const parsedBlog = JSON.parse(req.body.blog);
+    console.log("Parsed blog data:", parsedBlog);
+
+    const { title, subTitle, description, category, isPublished } = parsedBlog;
+
+    const imageFile = req.file;
+
+    // Detailed validation with specific error messages
+    console.log("Validation check:");
+    console.log("- title:", title);
+    console.log("- description:", description);
+    console.log("- category:", category);
+    console.log("- imageFile:", imageFile);
+
+    if (!title || title.trim() === "") {
+      return res.json({ success: false, message: "Title is required" });
+    }
+    if (!description || description.trim() === "") {
+      return res.json({ success: false, message: "Description is required" });
+    }
+    if (!category || category.trim() === "") {
+      return res.json({ success: false, message: "Category is required" });
+    }
+    if (!imageFile) {
+      return res.json({ success: false, message: "Image file is required" });
+    }
+
+    // Read and upload file
     const fileBuffer = fs.readFileSync(imageFile.path);
+
     const response = await imagekit.upload({
       file: fileBuffer,
       fileName: imageFile.originalname,
       folder: "/blogs",
     });
+
+    // Clean up temporary file
+    fs.unlinkSync(imageFile.path);
 
     const optimizedImageUrl = imagekit.url({
       path: response.filePath,
@@ -79,19 +64,37 @@ export const addBlog = async (req, res) => {
       ],
     });
 
-    await Blog.create({
+    // Create blog in database
+    const newBlog = await Blog.create({
       title,
       subTitle,
       description,
       category,
       image: optimizedImageUrl,
-      isPublished,
+      isPublished: isPublished || false, // Default to false if not provided
     });
 
-    res.json({ success: true, message: "Blog Added successfully" });
+    res.json({
+      success: true,
+      message: "Blog added successfully",
+      blog: newBlog,
+    });
   } catch (error) {
     console.error("Blog creation error:", error);
-    return res.json({ success: false, message: "Missing required fields" });
+
+    // Clean up temp file if it exists and there's an error
+    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+      try {
+        fs.unlinkSync(req.file.path);
+      } catch (cleanupError) {
+        console.error("Error cleaning up temp file:", cleanupError);
+      }
+    }
+
+    return res.json({
+      success: false,
+      message: error.message || "Failed to create blog",
+    });
   }
 };
 
@@ -120,10 +123,16 @@ export const getBlogById = async (req, res) => {
 
 export const deleteBlogById = async (req, res) => {
   try {
-    const { id } = req.body;
-    console.log(id);
-    await Blog.findByIdAndDelete(id);
-    await Comment.deleteMany({ blog: id });
+    const blogId = req.query.blogId;
+    console.log(blogId);
+    // Delete the blog
+    const deletedBlog = await Blog.findByIdAndDelete(blogId);
+    if (!deletedBlog) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Blog not found" });
+    }
+    await Comment.deleteMany({ blog: blogId });
     res.json({ success: true, message: "Delete successfully" });
   } catch (error) {
     res.json({ success: false, message: error.message });

@@ -6,6 +6,7 @@ import wishlistReducer from "../features/Blog/wishlist";
 import authAdminReducer from "../features/Auth/adminAuth";
 import dashboardReducer from "../features/Admin/dashboard";
 import adminBlogReducer from "../features/Admin/addBlog";
+import adminBlogListReducer from "../features/Admin/BlogList";
 export const store = configureStore({
   reducer: {
     category: categoryReducer,
@@ -15,5 +16,6 @@ export const store = configureStore({
     authAdmin: authAdminReducer,
     dashboard: dashboardReducer,
     adminBlog: adminBlogReducer,
+    adminBlogList: adminBlogListReducer,
   },
 });

@@ -5,6 +5,8 @@ import { connect } from "mongoose";
 import { connectDB } from "./utils/db.js";
 import adminRoutes from "./routes/Admin/adminRoutes.js";
 import addBlogRoutes from "./routes/Admin/addBlogRoutes.js";
+import userAuthRoutes from "./routes/User/userAuthRoutes.js";
+import wishlistRoutes from "./routes/User/wishlistRoutes.js";
 
 const app = express();
 dotenv.config();
@@ -21,6 +23,8 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/api/admin", adminRoutes);
 app.use("/api/blog", addBlogRoutes);
+app.use("/api/user", userAuthRoutes);
+app.use("/api/wishlist", wishlistRoutes);
 
 // Connect to the database
 await connectDB();

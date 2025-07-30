@@ -1,20 +1,33 @@
-import React, { useEffect, useState } from "react";
-import { blog_data } from "../../assets/QuickBlog-Assets/assets";
+import React, { useEffect } from "react";
 import BlogTableItem from "../../components/admin/BlogTableItem";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { fetchBlogsList } from "../../features/Admin/BlogList";
 
 const ListBlog = () => {
-  const [blog, setBlog] = useState([]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const fetchBlog = async () => {
-    setBlog(blog_data);
-  };
+  const { token } = useSelector((state) => state.authAdmin);
+  const blogState = useSelector((state) => state.adminBlogList || {});
+  const { blogList = [], loading, error } = blogState;
+  console.log(blogList);
   useEffect(() => {
-    fetchBlog();
-  }, []);
+    if (!token) {
+      navigate("/admin");
+    } else {
+      dispatch(fetchBlogsList());
+    }
+  }, [token, navigate, dispatch]);
+
   return (
-    <div className="flex-1 px-5 pt-5 min-h-screen  sm:pt-12 sm:pl-16 bg-blue-50/50 ">
+    <div className="flex-1 px-5 pt-5 min-h-screen sm:pt-12 sm:pl-16 bg-blue-50/50">
       <h1>All Blogs</h1>
-      <div className=" relative max-w-4xl  overflow-x-auto shadow rounded-lg scrollbar-hide ">
+
+      {loading && <p>Loading...</p>}
+      {error && <p className="text-red-600">{error}</p>}
+
+      <div className="relative max-w-4xl overflow-x-auto shadow rounded-lg scrollbar-hide">
         <table className="w-full text-sm text-gray-500">
           <thead className="text-xs text-gray-600 text-left uppercase">
             <tr>
@@ -36,15 +49,22 @@ const ListBlog = () => {
             </tr>
           </thead>
           <tbody>
-            {/* Table body content goes here */}
-            {blog.map((blog, i) => (
-              <BlogTableItem
-                key={blog._id}
-                index={i + 1}
-                blog={blog}
-                fetchBlog={fetchBlog}
-              />
-            ))}
+            {Array.isArray(blogList) && blogList.length > 0
+              ? blogList.map((blog, i) => (
+                  <BlogTableItem
+                    key={blog._id}
+                    index={i + 1}
+                    blog={blog}
+                    fetchBlog={() => dispatch(fetchBlogsList())}
+                  />
+                ))
+              : !loading && (
+                  <tr>
+                    <td className="px-4 py-2 text-center" colSpan={5}>
+                      No blogs found.
+                    </td>
+                  </tr>
+                )}
           </tbody>
         </table>
       </div>

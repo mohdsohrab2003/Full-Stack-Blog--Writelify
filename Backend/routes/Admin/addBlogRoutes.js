@@ -16,7 +16,7 @@ const addBlogRoutes = express.Router();
 addBlogRoutes.post("/add", upload.single("image"), auth, addBlog);
 addBlogRoutes.get("/all", getAllBlog);
 addBlogRoutes.get("/:blogId", getBlogById);
-addBlogRoutes.post("/delete", auth, deleteBlogById);
+addBlogRoutes.delete("/delete", auth, deleteBlogById);
 addBlogRoutes.post("/toggel-publish", auth, togglePublished);
 addBlogRoutes.post("/add-comment", addComment);
 addBlogRoutes.get("/comment/:blogId", getBlogComment);

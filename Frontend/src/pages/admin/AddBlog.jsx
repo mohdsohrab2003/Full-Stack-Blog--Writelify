@@ -31,15 +31,23 @@ const AddBlog = () => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("subTitle", subTitle);
-    formData.append("description", description);
-    formData.append("category", category);
-    formData.append("isPublished", isPublished);
-    formData.append("image", image);
+    // ✅ Create a regular JavaScript object instead of FormData
+    const blogData = {
+      title: title,
+      subTitle: subTitle,
+      description: description,
+      category: category,
+      isPublished: isPublished,
+      image: image, // This should be the File object from the input
+    };
 
-    dispatch(addBlog({ blogData: formData, token }));
+    // console.log("=== FORM SUBMIT DEBUG ===");
+    // console.log("blogData being sent:", blogData);
+    // console.log("title specifically:", blogData.title);
+    // console.log("image file:", blogData.image);
+    // console.log("========================");
+
+    dispatch(addBlog({ blogData, token }));
   };
 
   useEffect(() => {
@@ -47,7 +55,7 @@ const AddBlog = () => {
       alert("✅ Blog added successfully!");
       setTitle("");
       setSubTitle("");
-      setCategory("Startup");
+      setCategory("");
       setIsPublished(false);
       setImage(false);
       if (quillRef.current) {

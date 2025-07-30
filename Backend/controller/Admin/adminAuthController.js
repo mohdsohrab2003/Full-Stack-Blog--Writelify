@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import Blog from "../../model/blog.js";
 import Comment from "../../model/comment.js";
 
-export const adminAuth = (req, res, next) => {
+export const adminAuth = (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -35,7 +35,7 @@ export const adminAuth = (req, res, next) => {
 export const getAdminAllBlog = async (req, res) => {
   try {
     const blogs = await Blog.find({}).sort({ createdAt: -1 });
-    res.json({ success: true, blogs });
+    res.json({ success: true, blogList: blogs });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
@@ -52,21 +52,24 @@ export const getAllComment = async (req, res) => {
   }
 };
 
-export const getDashboard = async () => {
+export const getDashboard = async (req, res) => {
   try {
-    const recentBLogs = await Blog.find({}).sort({ createdAt: -1 }).limit(5);
+    const recentBlogs = await Blog.find({}).sort({ createdAt: -1 }).limit(10);
     const blogs = await Blog.countDocuments();
     const comment = await Comment.countDocuments();
     const drafts = await Blog.countDocuments({ isPublished: false });
+
     const dashboardData = {
       blogs,
       comment,
       drafts,
-      recentBLogs,
+      recentBlogs, // Fixed typo
     };
-    res.json({ success: true, dashboardData });
+
+    res.status(200).json({ success: true, dashboardData });
   } catch (error) {
-    res.json({ success: false, message: error.message });
+    console.error("Dashboard error:", error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -74,7 +77,7 @@ export const deleteCommentById = async (req, res) => {
   try {
     const { id } = req.body;
     await Comment.findByIdAndDelete();
-    res.json({ success: true, message: "Aproved successfully" });
+    res.json({ success: true, message: "Delete successfully" });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
@@ -84,7 +87,7 @@ export const approveComment = async (req, res) => {
   try {
     const { id } = req.body;
     await Comment.findByIdAndUpdate(id, { isApproved: true });
-    res.json({ success: true, message: "Delete successfully" });
+    res.json({ success: true, message: "Aproved successfully" });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
